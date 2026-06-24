@@ -1,0 +1,253 @@
+week3:- --------- MUSIC PLAYER 
+***********************************************************************************************************************
+index.html---------------------
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="player">
+    <img id="cover" src="images/cover1.jpg" alt="Album Cover">
+
+    <h2 id="title">Song Title</h2>
+    <h4 id="artist">Artist Name</h4>
+
+    <audio id="audio"></audio>
+
+    <div class="progress-container" id="progress-container">
+        <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="time">
+        <span id="current-time">0:00</span>
+        <span id="duration">0:00</span>
+    </div>
+
+    <div class="controls">
+        <button id="prev">⏮</button>
+        <button id="play">▶</button>
+        <button id="next">⏭</button>
+    </div>
+
+    <div class="volume-control">
+        <label>🔊</label>
+        <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+    </div>
+
+    <div class="playlist" id="playlist"></div>
+</div>
+
+************************************************************************************************************
+
+style.css---------------
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #1d2671, #c33764);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+}
+
+.player {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 20px;
+    width: 350px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+.player img {
+    width: 100%;
+    border-radius: 15px;
+}
+
+.controls button {
+    font-size: 24px;
+    margin: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.progress-container {
+    width: 100%;
+    height: 8px;
+    background: #ddd;
+    margin: 15px 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #ff4b5c;
+    border-radius: 5px;
+}
+
+.time {
+    display: flex;
+    justify-content: space-between;
+}
+
+.volume-control {
+    margin-top: 15px;
+}
+
+.playlist {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.playlist div {
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.playlist div:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+
+<script src="script.js"></script>
+</body>
+</html
+
+*************************************************************************************************************************
+
+script.js----------------------------
+
+script.js--=>
+const songs = [
+    {
+        title: "Song One",
+        artist: "Artist A",
+        src: "songs/song1.mp3",
+        cover: "images/cover1.jpg"
+    },
+    {
+        title: "Song Two",
+        artist: "Artist B",
+        src: "songs/song2.mp3",
+        cover: "images/cover2.jpg"
+    },
+    {
+        title: "Song Three",
+        artist: "Artist C",
+        src: "songs/song3.mp3",
+        cover: "images/cover3.jpg"
+    }
+];
+
+let currentSong = 0;
+
+const audio = document.getElementById("audio");
+const title = document.getElementById("title");
+const artist = document.getElementById("artist");
+const cover = document.getElementById("cover");
+const playBtn = document.getElementById("play");
+const prevBtn = document.getElementById("prev");
+const nextBtn = document.getElementById("next");
+const progress = document.getElementById("progress");
+const progressContainer = document.getElementById("progress-container");
+const currentTimeEl = document.getElementById("current-time");
+const durationEl = document.getElementById("duration");
+const volume = document.getElementById("volume");
+const playlist = document.getElementById("playlist");
+
+function loadSong(song) {
+    title.textContent = song.title;
+    artist.textContent = song.artist;
+    audio.src = song.src;
+    cover.src = song.cover;
+}
+
+function playSong() {
+    audio.play();
+    playBtn.textContent = "⏸";
+}
+
+function pauseSong() {
+    audio.pause();
+    playBtn.textContent = "▶";
+}
+
+playBtn.addEventListener("click", () => {
+    if (audio.paused) {
+        playSong();
+    } else {
+        pauseSong();
+    }
+});
+
+nextBtn.addEventListener("click", () => {
+    currentSong = (currentSong + 1) % songs.length;
+    loadSong(songs[currentSong]);
+    playSong();
+});
+
+prevBtn.addEventListener("click", () => {
+    currentSong = (currentSong - 1 + songs.length) % songs.length;
+    loadSong(songs[currentSong]);
+    playSong();
+});
+
+audio.addEventListener("timeupdate", () => {
+    const { currentTime, duration } = audio;
+    const progressPercent = (currentTime / duration) * 100;
+    progress.style.width = `${progressPercent}%`;
+
+    currentTimeEl.textContent = formatTime(currentTime);
+    durationEl.textContent = formatTime(duration);
+});
+
+function formatTime(time) {
+    const mins = Math.floor(time / 60);
+    const secs = Math.floor(time % 60);
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+}
+
+progressContainer.addEventListener("click", (e) => {
+    const width = progressContainer.clientWidth;
+    const clickX = e.offsetX;
+    const duration = audio.duration;
+    audio.currentTime = (clickX / width) * duration;
+});
+
+volume.addEventListener("input", () => {
+    audio.volume = volume.value;
+});
+
+audio.addEventListener("ended", () => {
+    currentSong = (currentSong + 1) % songs.length;
+    loadSong(songs[currentSong]);
+    playSong();
+});
+
+function loadPlaylist() {
+    songs.forEach((song, index) => {
+        const songItem = document.createElement("div");
+        songItem.textContent = `${song.title} - ${song.artist}`;
+        songItem.addEventListener("click", () => {
+            currentSong = index;
+            loadSong(songs[currentSong]);
+            playSong();
+        });
+        playlist.appendChild(songItem);
+    });
+}
+
+loadSong(songs[currentSong]);
+loadPlaylist();
