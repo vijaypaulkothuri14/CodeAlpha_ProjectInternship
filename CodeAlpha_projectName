@@ -1,0 +1,175 @@
+week 1:-- IMAGE GALLERY 
+***************************************************************************************************************************************************************************************************
+Index.html------------------------
+<title>Image Gallery</title>
+<h1>My Image Gallery</h1>
+
+<div class="buttons">
+    <button onclick="showAll()">All</button>
+    <button onclick="filterImages('nature')">Nature</button>
+    <button onclick="filterImages('city')">City</button>
+</div>
+
+<div class="gallery">
+
+    <div class="image nature">
+        <img src="c:\Users\vijay\Downloads\2025-10-22.webp"onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="image city">
+        <img src="c:\Users\vijay\Downloads\salar-jung-museum-hyderabad-secunderabad-telangana-4-musthead-hero.jpg" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="image nature">
+        <img src="c:\Users\vijay\Downloads\glass-bridge-wayanad.webp" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="image city">
+        <img src="c:\Users\vijay\Downloads\hyderabad-india-december-09-2023-600w-2608017811.webp" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="image nature">
+        <img src="c:\Users\vijay\Downloads\10-Must-Do-Activities-in-Wayanad.avif" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="image city">
+        <img src="c:\Users\vijay\Downloads\Downtown_hyderabad_drone.png" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="image nature">
+        <img src="c:\Users\vijay\Downloads\best-things-to-do-in-varkala-1200x385.webp" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="image city">
+        <img src="c:\Users\vijay\Downloads\Downtown_hyderabad_drone.png" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="image nature">
+        <img src="c:\Users\vijay\Downloads\scenic-paradise.jpg" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="image city">
+        <img src="c:\Users\vijay\Downloads\hyderabad-landmark-telangana-secretariat-night-image-captures-majestic-building-illuminated-against-sky-grand-379650440.webp" onclick="openLightbox(this.src)">
+    </div>
+
+</div>
+
+<div id="lightbox">
+    <span class="close" onclick="closeLightbox()">×</span>
+
+    <button class="prev" onclick="prevImage()">❮</button>
+
+    <img id="lightboxImage">
+
+    <button class="next" onclick="nextImage()">❯</button>
+</div>
+
+<script src="script.js"></script>
+
+*******************************************************************************************************************************************************************************************************
+
+style.css-------------------------
+body { font-family: Arial, sans-serif; text-align: center; margin: 20px; background-color: #f4f4f4; }
+
+h1 { margin-bottom: 20px; }
+
+.buttons button { padding: 10px 15px; margin: 5px; border: none; background-color: #3498db; color: white; cursor: pointer; border-radius: 5px; }
+
+.buttons button:hover { background-color: #2980b9; }
+
+.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap: 15px; }
+
+.image img { width: 100%; height: 220px; object-fit: cover; border-radius: 10px; transition: 0.4s; cursor: pointer; }
+
+.image img:hover { transform: scale(1.05); filter: brightness(80%); }
+
+#lightbox { display: none; position: fixed; top: 0; left: 0;
+
+width: 100%;
+height: 100%;
+
+background: rgba(0,0,0,0.9);
+
+justify-content: center;
+align-items: center;
+}
+
+#lightbox img { width: 70%; max-width: 800px; border-radius: 10px; }
+
+.close { position: absolute; top: 20px; right: 30px; color: white; font-size: 35px; cursor: pointer; }
+
+.prev, .next { position: absolute; top: 50%; transform: translateY(-50%); font-size: 30px; padding: 10px; border: none; background: rgba(255,255,255,0.3); color: white; cursor: pointer; }
+
+.prev { left: 20px; }
+
+.next { right: 20px; }
+
+@media(max-width:600px) { #lightbox img { width: 90%; } 
+}
+
+****************************************************************************************************************************************************************************************************************
+
+script.js---------------------------------
+ let images = document.querySelectorAll(".gallery img");
+
+let currentIndex = 0;
+
+function openLightbox(src) { document.getElementById("lightbox").style.display = "flex";
+
+document.getElementById("lightboxImage").src = src;
+
+for(let i = 0; i < images.length; i++)
+{
+    if(images[i].src == src)
+    {
+        currentIndex = i;
+    }
+}
+}
+
+function closeLightbox() { document.getElementById("lightbox").style.display = "none"; }
+
+function nextImage() { currentIndex++;
+
+if(currentIndex >= images.length)
+{
+    currentIndex = 0;
+}
+
+document.getElementById("lightboxImage").src =
+images[currentIndex].src;
+}
+
+function prevImage() { currentIndex--;
+
+if(currentIndex < 0)
+{
+    currentIndex = images.length - 1;
+}
+
+document.getElementById("lightboxImage").src =
+images[currentIndex].src;
+}
+
+function filterImages(category) { let allImages = document.querySelectorAll(".image");
+
+allImages.forEach(function(item)
+{
+    if(item.classList.contains(category))
+    {
+        item.style.display = "block";
+    }
+    else
+    {
+        item.style.display = "none";
+    }
+});
+}
+
+function showAll() { let allImages = document.querySelectorAll(".image");
+
+allImages.forEach(function(item)
+{
+    item.style.display = "block";
+});
+}
